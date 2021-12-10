@@ -42,7 +42,8 @@ def part1(data) -> int:
 
 def part2(data) -> int:
     """
-    Track vertical and horizontal paths, and count how many grid points overlap.
+    Track vertical, horizontal, and diagonal (45deg only) paths,
+    and count how many grid points overlap.
     :param data: set of tuples of form ((x1, y1), (x2, y2)), the start and end of a path
     :return: int, the count of points where multiple paths overlap
     """
