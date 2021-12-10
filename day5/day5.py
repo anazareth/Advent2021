@@ -91,4 +91,4 @@ if __name__ == '__main__':
     horiz_vert_paths = [((x1, y1), (x2, y2)) for ((x1, y1), (x2, y2)) in
                         all_paths if x1 == x2 or y1 == y2]
     print(f'Solution to part 1: {part1(horiz_vert_paths)}')
-    print(f'Solution to part 1: {part2(all_paths)}')
+    print(f'Solution to part 2: {part2(all_paths)}')
