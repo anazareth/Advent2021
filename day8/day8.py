@@ -29,91 +29,61 @@ def part1(output_only):
 
 def part2(all_data):
     run_sum = 0
-    digit_signals = {'abcefg': 0, 'cf': 1,
-                     'acdeg': 2, 'acdfg': 3,
-                     'bcdf': 4, 'abdfg': 5,
-                     'abdefg': 6, 'acf': 7,
-                     'abcdefg': 8, 'abcdfg': 9}
-    for row in all_data:
-        num_segments = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
-        char_map = dict.fromkeys(num_segments, set(num_segments))  # key, value is new, old
-        all_digits = range(0, 10)
-        digit_possibilities = {k: set() for k in all_digits}
-
-        all_signals = [s for grp in row for s in grp]
-        for sig in all_signals:
-            if len(sig) == 2:
-                digit_possibilities[1].add(frozenset(sig))
-            elif len(sig) == 3:
-                digit_possibilities[7].add(frozenset(sig))
-            elif len(sig) == 4:
-                digit_possibilities[4].add(frozenset(sig))
-            elif len(sig) == 5:
-                digit_possibilities[2].add(frozenset(sig))
-                digit_possibilities[3].add(frozenset(sig))
-                digit_possibilities[5].add(frozenset(sig))
-            elif len(sig) == 6:
-                digit_possibilities[0].add(frozenset(sig))
-                digit_possibilities[6].add(frozenset(sig))
-                digit_possibilities[9].add(frozenset(sig))
-            elif len(sig) == 7:
-                digit_possibilities[8].add(frozenset(sig))
+    for signals, outputs in all_data:
+        disp_key = {k: set() for k in range(10)}
+        for sig in signals:
+            lsig = len(sig)
+            fsig = frozenset(sig)
+            if lsig == 2:
+                disp_key[1].add(fsig)
+            elif lsig == 3:
+                disp_key[7].add(fsig)
+            elif lsig == 4:
+                disp_key[4].add(fsig)
+            elif lsig == 5:
+                disp_key[2].add(fsig)
+                disp_key[3].add(fsig)
+                disp_key[5].add(fsig)
+            elif lsig == 6:
+                disp_key[0].add(fsig)
+                disp_key[6].add(fsig)
+                disp_key[9].add(fsig)
+            elif lsig == 7:
+                disp_key[8].add(fsig)
             else:
-                print(f'Unrecognized signal {sig}.')
-
-        letter_sets = []
-        for i in all_digits:
-            print(i)
-            letter_sets.append(set([c for s in digit_possibilities[i] for c in s]))
-
-        for c in num_segments:
-            if all([c in letter_sets[0], c not in letter_sets[1], c in letter_sets[2],
-                    c in letter_sets[3], c not in letter_sets[4], c in letter_sets[5],
-                    c in letter_sets[6], c in letter_sets[7], c in letter_sets[8],
-                    c in letter_sets[9]]):
-                char_map[c] = 'a'
-            elif all([c in letter_sets[0], c not in letter_sets[1], c not in letter_sets[2],
-                      c not in letter_sets[3], c in letter_sets[4], c in letter_sets[5],
-                      c in letter_sets[6], c not in letter_sets[7], c in letter_sets[8],
-                      c in letter_sets[9]]):
-                char_map[c] = 'b'
-            elif all([c in letter_sets[0], c in letter_sets[1], c in letter_sets[2],
-                      c in letter_sets[3], c in letter_sets[4], c not in letter_sets[5],
-                      c not in letter_sets[6], c in letter_sets[7], c in letter_sets[8],
-                      c in letter_sets[9]]):
-                char_map[c] = 'c'
-            elif all([ c not in letter_sets[0], c not in letter_sets[1], c in letter_sets[2],
-                       c in letter_sets[3], c in letter_sets[4], c in letter_sets[5],
-                       c in letter_sets[6], c not in letter_sets[7], c in letter_sets[8],
-                       c in letter_sets[9]]):
-                char_map[c] = 'd'
-            elif all([c in letter_sets[0], c not in letter_sets[1], c in letter_sets[2],
-                      c not in letter_sets[3], c not in letter_sets[4], c not in letter_sets[5],
-                      c in letter_sets[6], c not in letter_sets[7], c in letter_sets[8],
-                      c not in letter_sets[9]]):
-                char_map[c] = 'e'
-            elif all([c not in letter_sets[0], c in letter_sets[1], c in letter_sets[2],
-                      c in letter_sets[3], c in letter_sets[4], c in letter_sets[5],
-                      c in letter_sets[6], c in letter_sets[7], c in letter_sets[8],
-                      c in letter_sets[9]]):
-                char_map[c] = 'f'
-            elif all([c in letter_sets[0], c not in letter_sets[1], c in letter_sets[2],
-                      c in letter_sets[3], c not in letter_sets[4], c in letter_sets[5],
-                      c in letter_sets[6], c not in letter_sets[7], c in letter_sets[8],
-                      c in letter_sets[9]]):
-                char_map[c] = 'g'
+                print(f'unrecognized signal {sig}')
+        key4 = list(disp_key[4])[0]
+        key7 = list(disp_key[7])[0]
+        num_to_add = ''
+        for out in outputs:
+            lout = len(out)
+            if lout == 2:
+                num_to_add += '1'
+            elif lout == 3:
+                num_to_add += '7'
+            elif lout == 4:
+                num_to_add += '4'
+            elif lout == 5:
+                if key7.issubset(out):
+                    num_to_add += '3'
+                elif len(key4.intersection(out)) == 3:
+                    num_to_add += '5'
+                else:
+                    num_to_add += '2'
+            elif lout == 6:
+                if key4.issubset(out):
+                    num_to_add += '9'
+                elif key7.issubset(out):
+                    num_to_add += '0'
+                else:
+                    num_to_add += '6'
+            elif lout == 7:
+                num_to_add += '8'
             else:
-                print(f'something bad for char {c}!!!')
-        # translate output
-        for o in row[1]:
-            run_sum += digit_signals[trans_output(o, char_map)]
+                print(f'unrecognized output signal {out}')
+        run_sum += int(num_to_add)
     return run_sum
 
-def trans_output(text, char_mapping):
-    result = ''
-    for c in text:
-        result += char_mapping[c]
-    return ''.join(sorted(result))
 
 if __name__ == '__main__':
     raw_data = np.loadtxt(INFILE, dtype=str, delimiter='\n')
